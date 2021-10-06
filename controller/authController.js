@@ -1,7 +1,6 @@
 const User = require("../models/User");
-const crypto = require("crypto");
 const jwt = require("jsonwebtoken");
-const jwtKey = process.env.JWT_KEY || crypto.randomBytes(64).toString("hex");
+const jwtKey = process.env.JWT_KEY;
 
 /**
  *
@@ -55,7 +54,7 @@ const login = async (req, res) => {
         const { email, password } = req.body;
         const user = await User.findOne({ email });
         if (!user || !user.comparePassword(password)) throw new Error("not found");
-        const token = jwt.sign({ name: user.name, email: user.email }, jwtKey);
+        const token = jwt.sign({ name: user.name, email: user.email }, jwtKey, { expiresIn: "7d" });
         return res.json({
             token,
             user: {
