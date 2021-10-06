@@ -8,7 +8,7 @@ const signUp = async (req, res) => {
     try {
         const { name, email, password } = req.body;
         const user = await User.findOne({ email });
-        if (user) res.status(403).json({ message: "User already exists", status: 0 });
+        if (user) return res.status(403).json({ message: "User already exists", status: 0 });
 
         //Password get hashed because of middleware.
         const newUser = await User.create({
@@ -16,13 +16,15 @@ const signUp = async (req, res) => {
             email,
             password,
         });
-        res.json({
+        return res.json({
             message: "ok",
+            status: 1,
         });
     } catch (err) {
         console.log(err);
         res.status(500).json({
             message: "Error while registering",
+            status: -1,
         });
     }
 };
