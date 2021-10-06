@@ -6,6 +6,10 @@ const verifyUser = async (req, res, next) => {
             const bearer = bearerHeader.split(" ");
             const bearerToken = bearer[1];
             const decoded = jwt.verify(bearerToken, process.env.JWT_KEY);
+            if (!decoded)
+                return res.status(403).json({
+                    message: "Token not valid.",
+                });
             req.user = decoded;
             return next();
         } else {
